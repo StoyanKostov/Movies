@@ -1,7 +1,7 @@
 // http://omdbapi.com/
-export const getMovie = id => {
+export const getMovie = title => {
     return (dispatch, getState) => {
-        return fetch('https://facebook.github.io/react-native/movies.json').then((response) => response.json())
+        return fetch(`http://www.omdbapi.com/?t=${title}&apikey=plzBanMe`).then((response) => response.json())
         .then(movie => {
             return dispatch({ type: 'GET_MOVIE_SUCCESS', movie });
         }).catch(error => {
@@ -10,7 +10,7 @@ export const getMovie = id => {
     };
 };
 
-export function getMovieSuccess(movie) {
+export const getMovieSuccess = movie => {
     return {
         type: 'GET_MOVIE_SUCCESS',
         receivedAt: Date.now(),
@@ -18,10 +18,10 @@ export function getMovieSuccess(movie) {
     };
 }
 
-export const addMovie = id => {
+export const addToFavorites = movie => {
     return {
-        type: 'ADD_MOVIE',
-        id
+        type: 'ADD_TO_FAVORITES',
+        movie
     };
 };
 

@@ -1,15 +1,15 @@
 function movieApp(state, action) {
-    let newState = {};
+    let newState = Object.assign({}, state);
     switch (action.type) {
         case 'GET_MOVIE_SUCCESS':
-            newState = Object.assign({}, state, {
-                movies: action.movie.movies
-            });
+            newState.movie = action.movie;
             break;
-        case 'ADD_MOVIE':
+        case 'ADD_TO_FAVORITES':
+            newState.movies.push(action.movie);
+            break;
         case 'REMOVE_MOVIE':
     }
-    return Object.freeze( newState );
+    return Object.freeze(newState);
 }
 
 export default movieApp
