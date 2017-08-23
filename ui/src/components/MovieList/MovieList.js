@@ -5,7 +5,7 @@ import Movie from '../Movie/Movie.js'
 const MovieList = ({ movies, onMovieClick }) => (
   <ul>
     {movies.map(movie => (
-      <Movie id={movie.id} description={movie.description} onClick={() => onMovieClick(movie.id)} />
+      <Movie id={movie.id} title={movie.title} description={movie.description} onClick={() => onMovieClick(movie.id)} />
     ))}
   </ul>
 )

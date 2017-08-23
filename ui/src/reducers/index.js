@@ -1,10 +1,13 @@
-function movieApp(state = {}, action) {
-    let newState = Object.assign({}, state);
+function movieApp(state, action) {
+    let newState = {};
     switch (action.type) {
+        case 'GET_MOVIE_SUCCESS':
+            newState = Object.assign({}, state, {
+                movies: action.movie.movies
+            });
+            break;
         case 'ADD_MOVIE':
-            newState;
         case 'REMOVE_MOVIE':
-            newState;
     }
     return Object.freeze( newState );
 }

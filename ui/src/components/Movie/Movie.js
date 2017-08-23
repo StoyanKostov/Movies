@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const Movie = ({ id, description, onClick }) => (
+const Movie = ({ id, title, description, onClick }) => (
   <li onClick={onClick} >
+    {title}
     {description}
   </li>
 )
