@@ -2,22 +2,30 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Movie from '../Movie/Movie.js'
 
-const MovieList = ({ movies, onMovieClick }) => (
-  <ul>
-    {movies.map(movie => (
-      <Movie id={movie.id} title={movie.title} description={movie.description} onClick={() => onMovieClick(movie.id)} />
-    ))}
-  </ul>
+const MovieList = ({ favorites, onSave }) => (
+  <div>
+    <ul>
+      {favorites.map(movie => (
+        <Movie title={movie.Title} year={movie.Year} imdbRating={movie.imdbRating} genre={movie.Genre} onClick={() => console.log(movie.Title)} />
+      ))}
+    </ul>
+    {favorites.length > 0 &&
+      <button onClick={onSave}>Save</button>
+    }
+  </div>
 )
 
 MovieList.propTypes = {
-  movies: PropTypes.arrayOf(
+  favorites: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      description: PropTypes.bool.isRequired,
+      onClick: PropTypes.func,
+      Title: PropTypes.string.isRequired,
+      Year: PropTypes.string.isRequired,
+      imdbRating: PropTypes.string.isRequired,
+      Genre: PropTypes.string.isRequired
     }).isRequired
   ).isRequired,
-  onMovieClick: PropTypes.func.isRequired
+  onSave: PropTypes.func.isRequired
 }
 
 export default MovieList

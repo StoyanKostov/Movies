@@ -5,7 +5,7 @@ function movieApp(state, action) {
             newState.movie = action.movie;
             break;
         case 'ADD_TO_FAVORITES':
-            newState.movies.push(action.movie);
+            newState.favorites = newState.favorites.concat([action.movie]);
             break;
         case 'REMOVE_MOVIE':
     }

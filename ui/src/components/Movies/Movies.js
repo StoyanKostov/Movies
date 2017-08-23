@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import React, { Component } from 'react';
 import MovieList from '../MovieList/MovieList.js';
 import Movie from '../Movie/Movie.js';
-import { getMovie, addToFavorites } from '../../actions/movie.js';
+import { getMovie, addToFavorites, saveFavorites } from '../../actions/movie.js';
 import { delay } from '../../helpers.js';
 
 class Movies extends Component {
@@ -14,9 +14,6 @@ class Movies extends Component {
     this.processInput = this.processInput.bind(this);
   }
   processInput(e) {
-    this.processInputDelayed(e.target.value);
-  }
-  addToFavorites(e) {
     this.processInputDelayed(e.target.value);
   }
   render() {
@@ -34,7 +31,7 @@ class Movies extends Component {
             <button onClick = { () => this.props.addToFavorites(movie) }>Add to favorites</button>
           </div>
         }
-        <MovieList movies= {this.props.movies || []} onMovieClick = {id => { alert(id) }}/>
+        <MovieList favorites= {this.props.favorites || []} onSave = {this.props.saveFavoritesHandler}/>
       </div>
     );
   }
@@ -43,7 +40,7 @@ class Movies extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     movie: state.movie,
-    movies: state.movies
+    favorites: state.favorites
   }
 }
 
@@ -54,6 +51,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     addToFavorites: (movie) => {
       dispatch(addToFavorites(movie))
+    },
+    saveFavoritesHandler: () => {
+      dispatch(saveFavorites())
     }
   }
 }

@@ -6,7 +6,7 @@ import movieApp from './reducers';
 import Root from './components/Root';
 import registerServiceWorker from './registerServiceWorker';
 
-let store = createStore(movieApp, Object.freeze({"movies": []}), compose(
+let store = createStore(movieApp, Object.freeze({"favorites": []}), compose(
     applyMiddleware(thunk),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   ));

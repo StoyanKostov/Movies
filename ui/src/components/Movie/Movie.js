@@ -12,10 +12,10 @@ const Movie = ({ title, year, imdbRating, genre, onClick }) => (
 
 Movie.propTypes = {
   onClick: PropTypes.func,
-  title: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
   year: PropTypes.string.isRequired,
   imdbRating: PropTypes.string.isRequired,
-  genre: PropTypes.string.isRequired,
+  genre: PropTypes.string.isRequired
 }
 
 export default Movie
