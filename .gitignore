@@ -1,5 +1,6 @@
 # dependencies
 /ui/node_modules
+/node_modules
 
 # testing
 /ui/coverage

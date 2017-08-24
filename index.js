@@ -1,19 +1,10 @@
 const cluster = require('cluster'),
-    //exec = require('child_process').exec,
+    // exec = require('child_process').exec,
     stopSignals = [
         'SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
     ],
     production = process.env.NODE_ENV == 'production';
-
-// exec('', (err, stdout, stderr) => {
-//     if (err) {
-//         return;
-//     }
-
-//     console.log(`stdout: ${stdout}`);
-//     console.log(`stderr: ${stderr}`);
-// });
 
 let stopping = false;
 
@@ -38,6 +29,17 @@ cluster.on('exit', function (worker, code, signal) {
 });
 
 if (cluster.isMaster) {
+    // console.log('Building of Client-side started');
+    // exec('node ui/scripts/build.js', (err, stdout, stderr) => {
+    //     if (err) {
+    //         console.log(`Building of Client-side crashed with error: ${JSON.stringify(err)}`);
+    //     }
+    
+    //     console.log(`stdout: ${stdout}`);
+    //     console.log(`stderr: ${stderr}`);
+    //     console.log('Building of Client-side finished');
+    // });
+
     const workerCount = require('os').cpus().length;
     console.log(`Starting ${workerCount} workers...`);
 
