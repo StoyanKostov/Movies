@@ -53,6 +53,13 @@
     "buildClient": "node ui/scripts/build.js",
     "testClient": "node ui/scripts/test.js --env=jsdom"
   },
+  "proxy":  [
+    {
+      "context": ["//user//**", "//movies//**"],
+      "target": "http://127.0.0.1:8080",
+      "secure": false
+    }
+  ],
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"

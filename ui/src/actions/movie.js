@@ -1,4 +1,5 @@
-// http://omdbapi.com/
+import { requestDispatcher } from '../helpers.js'
+
 export const getMovie = title => {
     return (dispatch, getState) => {
         return fetch(`http://www.omdbapi.com/?t=${title}&apikey=plzBanMe`).then((response) => response.json())
@@ -23,14 +24,13 @@ export const addToFavorites = newMovie => {
 export const saveFavorites = newMovie => {
     return (dispatch, getState) => {
         let state = getState();
-        debugger;
-        fetch('http://127.0.0.1:8080/movies/add', {
+        requestDispatcher('http://127.0.0.1:8080/movies/add', {
             method: 'POST',
             header: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            data: JSON.stringify(state.favorites)
+            data: state.favorites
         }).then(function (response) {
             return response.json()
         }).then(function (body) {
