@@ -47,8 +47,8 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "start": "NODE_ENV='dev' node --use_strict index.js",
-    "startProd": "NODE_ENV='prod' node --use_strict index.js",
+    "start": "SET NODE_ENV=dev& node --use_strict index.js",
+    "startProd": "SET NODE_ENV=prod& node --use_strict index.js",
     "startClient": "node ui/scripts/start.js",
     "buildClient": "node ui/scripts/build.js",
     "testClient": "node ui/scripts/test.js --env=jsdom"

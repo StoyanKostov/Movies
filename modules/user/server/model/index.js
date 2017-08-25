@@ -1,10 +1,16 @@
 const path = require('path'),
 	DB = require(path.join(process.cwd(), 'data')),
-	VALIDATION = require(path.join('..', 'validation')),
+	VALIDATION = require(path.join(process.cwd(), 'validation')),
 	USER_MODEL = Object.create(null, {
-		registerUser: {
+		register: {
 			value: (newUser) => {
 				return new Promise( (resolve, reject) => {
+					if (!VALIDATION.isValidString(newUser.username)) {
+						reject('Please enter forename!');
+					}
+					if (!VALIDATION.isValidString(newUser.password)) {
+						reject('Please enter forename!');
+					}
 					if (!VALIDATION.isValidString(newUser.forename)) {
 						reject('Please enter forename!');
 					}
@@ -26,7 +32,27 @@ const path = require('path'),
 				});
 			}
 		},
-		getUserById: {
+		login: {
+			value: (params) => {
+				return new Promise( (resolve, reject) => {
+					if (!VALIDATION.isValidString(params.username)) {
+						reject('Please enter forename!');
+					}
+					if (!VALIDATION.isValidString(params.password)) {
+						reject('Please enter forename!');
+					}
+
+					DB.login(params, (err, id) => {
+						if( err !== null ){
+							reject('User creation failed');
+						}
+
+						resolve(id);
+					});
+				});
+			}
+		},
+		getById: {
 			value: (params) => {
 				return new Promise((resolve, reject) => {
 					if (!VALIDATION.isDefined(params.id)) {
@@ -43,7 +69,7 @@ const path = require('path'),
 				});
 			}
 		},
-		updateUserById: {
+		updateById: {
 			value: (params) => {
 				return new Promise((resolve, reject) => {
 					if (!VALIDATION.isDefined(params.id)) {
@@ -60,7 +86,7 @@ const path = require('path'),
 				});
 			}
 		},
-		deleteUserById: {
+		deleteById: {
 			value: (params) => {
 				return new Promise((resolve, reject) => {
 					if (!VALIDATION.isDefined(params.id)) {

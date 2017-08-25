@@ -1,6 +1,6 @@
 const path = require('path'),
     fs = require('fs'),
-    USER_MODEl = require(path.join('..', 'model'));
+    MOVIE_MODEl = require(path.join('..', 'model'));
 
 module.exports = {
     home: function () {
@@ -12,5 +12,6 @@ module.exports = {
                 resolve(content);
             });
         });
-    }
+    },
+    add: MOVIE_MODEl.add
 };

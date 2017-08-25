@@ -5,7 +5,7 @@ function initApp(modules) {
     let app = {};
 
     modules.forEach(function (module) {
-        let modulePath = path.join(process.cwd(), 'modules', module, 'server');
+        let modulePath = path.join(process.cwd(), 'modules', module.name, 'server');
 
         // Routes
         let routesPath = path.join(modulePath, 'routes');
@@ -15,8 +15,8 @@ function initApp(modules) {
             }
             let prefixedRoutes = {};
             let routes = require(path.join(routesPath, router));
-            for( let route in routes ){
-                prefixedRoutes[ `/${module}${route}` ] = routes[route];
+            for (let route in routes) {
+                prefixedRoutes[`${module.urlPrefix ? '/' + module.urlPrefix : ''}${route}`] = routes[route];
             }
 
             app.routes = Object.assign({}, app.routes, prefixedRoutes);

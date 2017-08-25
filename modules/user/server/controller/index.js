@@ -13,8 +13,8 @@ module.exports = {
             });
         });
     },
-    create: USER_MODEl.registerUser,
-    read: USER_MODEl.getUserById,
-    update: USER_MODEl.updateUserById,
-    delete: USER_MODEl.deleteUserById
+    create: USER_MODEl.register,
+    read: USER_MODEl.getById,
+    update: USER_MODEl.updateById,
+    delete: USER_MODEl.deleteById
 };

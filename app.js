@@ -4,7 +4,7 @@ const HTTP = require('http'),
     path = require('path'),
     CONFIG = require('./config')[process.env.NODE_ENV],
     { initApp } = require('./utils'),
-    APP_MODULES = ['movies', 'user'];
+    APP_MODULES = [{'name':'movies', 'urlPrefix': 'movies'}, {'name':'user', 'urlPrefix': 'user'}];
 let app;
 
 // Init application

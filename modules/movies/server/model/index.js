@@ -1,32 +1,44 @@
 const path = require('path'),
 	DB = require(path.join(process.cwd(), 'data')),
-	VALIDATION = require(path.join('..', 'validation')),
-	USER_MODEL = Object.create(null, {
-		registerUser: {
-			value: (newUser) => {
+	VALIDATION = require(path.join(process.cwd(), 'validation')),
+	MOVIE_MODEl = Object.create(null, {
+		add: {
+			value: (params) => {
+				let film = params[0];
 				return new Promise( (resolve, reject) => {
-					if (!VALIDATION.isValidString(newUser.forename)) {
+					if (!VALIDATION.isValidString(film.Title)) {
 						reject('Please enter forename!');
+						return;
 					}
-					if (!VALIDATION.isValidString(newUser.surname)) {
+					if (!VALIDATION.isValidString(film.Year)) {
 						reject('Please enter surname!');
+						return;
 					}
-					if (!VALIDATION.isValidEmail(newUser.email)) {
+					if (!VALIDATION.isValidString(film.imdbRating)) {
 						reject('Please enter email!');
+						return;
+					}
+					if (!VALIDATION.isValidString(film.Genre)) {
+						reject('Please enter email!');
+						return;
+					}
+					if (!VALIDATION.isValidString(film.imdbID)) {
+						reject('Please enter email!');
+						return;
 					}
 
-					newUser.created = new Date();
-					DB.insert(newUser, (err, id) => {
+					film.created = new Date();
+					DB.insert(film, (err, id) => {
 						if( err !== null ){
-							reject('User creation failed');
+							reject('Movie addition failed');
 						}
 
 						resolve(id);
 					});
 				});
 			}
-		},
-		getUserById: {
+		}/*,
+		getById: {
 			value: (params) => {
 				return new Promise((resolve, reject) => {
 					if (!VALIDATION.isDefined(params.id)) {
@@ -43,7 +55,7 @@ const path = require('path'),
 				});
 			}
 		},
-		updateUserById: {
+		updateById: {
 			value: (params) => {
 				return new Promise((resolve, reject) => {
 					if (!VALIDATION.isDefined(params.id)) {
@@ -60,7 +72,7 @@ const path = require('path'),
 				});
 			}
 		},
-		deleteUserById: {
+		deleteById: {
 			value: (params) => {
 				return new Promise((resolve, reject) => {
 					if (!VALIDATION.isDefined(params.id)) {
@@ -76,7 +88,7 @@ const path = require('path'),
 					});
 				});
 			}
-		}
+		}*/
 	});
 
-module.exports = USER_MODEL;
+module.exports = MOVIE_MODEl;

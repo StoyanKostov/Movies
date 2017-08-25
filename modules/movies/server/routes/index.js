@@ -16,5 +16,24 @@ module.exports = {
 				}));
 			});
 		}
+	},
+	"/add": {
+		method: 'POST',
+		handler: function (req, res) {
+			CONTROLLER.add(req.body).then((id) => {
+				res.statusCode = 201;
+				res.end(JSON.stringify({
+					code: 0,
+					message: 'Movie addition success',
+					payload: { id: id }
+				}));
+			}).catch((err) => {
+				res.statusCode =  409;
+				res.end(JSON.stringify({
+					code: 1,
+					message: err.message || 'Movie addition failed'
+				}));
+			});
+		}
 	}
 };
