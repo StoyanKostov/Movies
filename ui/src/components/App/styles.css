@@ -1,0 +1,151 @@
+html, body, div, header, nav, section, article, aside, figure, footer, time, button, ul, li, a, hgroup, h1, h2, h3, h4, p, form , input { 
+	margin: 0;
+	padding: 0;
+}
+
+img {
+	display: block;
+	border: none;
+}
+
+/*940px*/
+body { 
+	font-family: Arial, Verdana, Helvetica, sans-serif;
+	color: #4e4e4e;
+	font-size: 62.5%;
+	background-color: #ebebeb;
+}
+
+ul {
+	font-size: 0;
+	list-style-type: none;
+}
+
+ul>li {
+	display: inline-block;
+	zoom: 1;
+	*display: inline;
+	font-size: 10px;
+}
+
+a {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+label {
+	display: block;
+	margin: 15px;
+	font-weight: bold;
+}
+label>input {
+	margin-left: 10px;
+}
+label>input:required {
+	box-shadow: 0 0 3px rgba(255, 0, 0, 0.50);
+}
+
+button {
+	display: inline-block;
+	margin-top: 10px;
+	padding: 5px;
+	cursor: pointer;
+	border: none;
+}
+button:hover {
+	color: #ffffff;
+	background-color: #4e4e4e;
+}
+
+.wrapper {
+	margin: 0 auto;
+	max-width: 940px;
+	background-color: transparent;
+}
+
+.float-clear {
+	display: inline-block;
+	display: block;
+	zoom:1;
+}
+
+.float-clear:after {
+	content: "";
+	display: block;
+	height: 0;
+	clear:both;
+}
+
+/* start --> header */
+header#main {
+	min-height: 67px;
+}
+	header#main div.wrapper {
+		background-color: #373737;
+	}
+			div#logo {
+				float: left;
+			}
+				div#logo>a {
+					display: block;
+					height: 67px;
+				}
+				div#logo>a>img, div#logo>a>strong {
+					display: inline-block;
+				}
+				div#logo>a>strong {
+					padding-top: 24px;
+					padding-left: 5px;
+					color: #ffffff;
+					font-size: 13px;
+					vertical-align: top;
+				}
+/* end <-- header */
+
+/* start --> Main navigation*/
+	nav#navigation {
+		padding-left: 60px;
+		height: 69px;
+		background-position: 36px 24px;
+		float: right;
+	}
+			nav#navigation>ul>li {
+				margin-top: 26px;
+				padding: 0 15px;
+				height: 11px;
+				border-left: 1px solid #767676;
+			}
+				nav#navigation>ul>li:first-child {
+					border-left: none; 
+				}
+
+					nav#navigation>ul>li>a {
+						display: block;
+						padding-bottom: 26px;
+					}
+
+					nav#navigation>ul>li>a:hover{
+						border-bottom: 4px solid #656565; 
+					}
+					nav#navigation>ul>li>a.active{
+						border-bottom: 4px solid #f26c4f; 
+					}
+/* end <-- Main navigation*/
+.greeting {
+	padding: 20px 0;
+	color: #373737;
+}
+
+.movie-list {
+	margin: 10px 0;
+}
+	.movie-list>ul {
+		margin: 15px 0;
+	}
+		.movie-list>ul>li {
+			margin: 10px 15px 10px;
+			padding-left: 5px;
+			border-left: 1px solid #C5C5C5
+		}
+
+

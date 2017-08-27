@@ -1,22 +1,6 @@
 const CONTROLLER = require('../controller');
 
 module.exports = {
-	"/": {
-		method: 'GET',
-		handler: function (req, res) {
-			CONTROLLER.home().then((content) => {
-				res.statusCode = 200;
-				res.setHeader('Content-Type', 'text/html');
-				res.end(content);
-			}).catch((err) => {
-				res.statusCode =  404;
-				res.end(JSON.stringify({
-					code: 1,
-					message: err.message || 'Not found'
-				}));
-			});
-		}
-	},
 	"/create": {
 		method: 'POST',
 		handler: function (req, res) {
@@ -36,6 +20,30 @@ module.exports = {
 			});
 		}
 	},
+	"/login": {
+		method: 'POST',
+		handler: function (req, res) {
+			CONTROLLER.login(req.body).then((user) => {
+				res.statusCode = 200;
+				res.setHeader('Set-Cookie', `sessionKey=${user.sessionKey};Domain=127.0.0.1;Path=/`);
+				res.end(JSON.stringify({
+					code: 0,
+					message: 'User login success',
+					payload: {
+						"username": user.username,
+						"firstName": user.firstName,
+						"lastName": user.lastName
+					}
+				}));
+			}).catch((err) => {
+				res.statusCode =  404;
+				res.end(JSON.stringify({
+					code: 1,
+					message: err.message || 'User login failed'
+				}));
+			});
+		}
+	}/*,
 	"/read": {
 		method: 'GET',
 		handler: function (req, res) {
@@ -92,5 +100,5 @@ module.exports = {
 				}));
 			});
 		}
-	}
+	}*/
 };

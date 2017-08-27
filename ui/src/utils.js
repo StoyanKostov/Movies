@@ -17,16 +17,28 @@ export const requestDispatcher = (url, params) => {
     }
     let xhr = new XMLHttpRequest();
     xhr.open(params.method, url, true);
-    Object.entries(params.header).forEach(([key, value]) => {
-        xhr.setRequestHeader(key, value);
-    });
+    if(typeof params.header !== 'undefined'){
+        Object.entries(params.header).forEach(([key, value]) => {
+            xhr.setRequestHeader(key, value);
+        });
+    }
+    // xhr.withCredentials = true;
+    // credentials: 'include'
     xhr.send(JSON.stringify(params.data));
     return new Promise((resolve, reject) => {
         xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                resolve(xhr);
+            let response;
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if(xhr.status === 0){
+                    try{
+                        response = JSON.parse(xhr.responseText);
+                    } catch(err){
+                        response = { 'message': 'No response from server' }
+                    }
+                    return reject(response);
+                }
+                return resolve(JSON.parse(xhr.responseText));
             }
-            reject(xhr);
         };
     });
 }

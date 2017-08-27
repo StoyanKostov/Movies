@@ -4,11 +4,9 @@ const HTTP = require('http'),
     path = require('path'),
     CONFIG = require('./config')[process.env.NODE_ENV],
     { initApp } = require('./utils'),
-    APP_MODULES = [{'name':'movies', 'urlPrefix': 'movies'}, {'name':'user', 'urlPrefix': 'user'}];
-let app;
-
-// Init application
-app = initApp(APP_MODULES);
+    APP_MODULES = [{ 'name': 'index' }, { 'name': 'movies', 'urlPrefix': 'movies' }, { 'name': 'user', 'urlPrefix': 'user' }],
+    // Init application
+    APP = initApp(APP_MODULES);
 
 // Start apllication server
 const server = HTTP.createServer(function (req, res) {
@@ -67,7 +65,7 @@ const server = HTTP.createServer(function (req, res) {
             }
 
             // Handles End-points
-            let route = app.routes[urlParsed.pathname];
+            let route = APP.routes[urlParsed.pathname];
             if (route.method === req.method) {
                 req.body = typeof body === 'string' && body != '' ? JSON.parse(body) : body;
                 route.handler(req, res);

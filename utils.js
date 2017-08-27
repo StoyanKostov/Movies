@@ -1,4 +1,5 @@
 let path = require('path'),
+    crypto = require('crypto'),
     fs = require('fs');
 
 function initApp(modules) {
@@ -37,6 +38,55 @@ function getModules(dirname, callback) {
     }
 }
 
+function genSessionKey() {
+    return new Promise((resolve, reject) => {
+        crypto.randomBytes(8, (err, buf) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve(buf.toString('hex'));
+        });
+    })
+}
+
+function genSalt() {
+    return new Promise((resolve, reject) => {
+        crypto.randomBytes(8, (err, buf) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve(buf.toString('hex'));
+        });
+    })
+}
+
+function genPassword(password) {
+    return genSalt().then((salt) => {
+        return new Promise((resolve, reject) => {
+            crypto.pbkdf2(password, salt, 100000, 10, 'sha512', (err, derivedKey) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve({ 'passwordHash': derivedKey.toString('hex'), 'salt': salt });
+            })
+        });
+    });
+}
+
+function isPasswordValid(password, salt, passwordHash) {
+    return new Promise((resolve, reject) => {
+        crypto.pbkdf2(password, salt, 100000, 10, 'sha512', (err, derivedKey) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve(derivedKey.toString('hex') === passwordHash);
+        })
+    });
+}
+
 module.exports = {
-    initApp
+    genSessionKey,
+    initApp,
+    genPassword,
+    isPasswordValid
 }

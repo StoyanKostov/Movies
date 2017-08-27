@@ -1,94 +1,75 @@
 const path = require('path'),
 	DB = require(path.join(process.cwd(), 'data')),
+	TABLE = 'MOVIE',
 	VALIDATION = require(path.join(process.cwd(), 'validation')),
 	MOVIE_MODEl = Object.create(null, {
 		add: {
 			value: (params) => {
-				let film = params[0];
-				return new Promise( (resolve, reject) => {
-					if (!VALIDATION.isValidString(film.Title)) {
-						reject('Please enter forename!');
-						return;
-					}
-					if (!VALIDATION.isValidString(film.Year)) {
-						reject('Please enter surname!');
-						return;
-					}
-					if (!VALIDATION.isValidString(film.imdbRating)) {
-						reject('Please enter email!');
-						return;
-					}
-					if (!VALIDATION.isValidString(film.Genre)) {
-						reject('Please enter email!');
-						return;
-					}
-					if (!VALIDATION.isValidString(film.imdbID)) {
-						reject('Please enter email!');
-						return;
-					}
-
-					film.created = new Date();
-					DB.insert(film, (err, id) => {
-						if( err !== null ){
-							reject('Movie addition failed');
+				// Not for real DBs
+				params.movie.forEach((movie) => {
+					return new Promise((resolve, reject) => {
+						if (!VALIDATION.isValidString(movie.Title)) {
+							reject('Please provide film Title!');
+							return;
+						}
+						if (!VALIDATION.isValidString(movie.Year)) {
+							reject('Please provide film Year!');
+							return;
+						}
+						if (!VALIDATION.isValidString(movie.imdbRating)) {
+							reject('Please provide film imdbRating!');
+							return;
+						}
+						if (!VALIDATION.isValidString(movie.Genre)) {
+							reject('Please provide film Genre!');
+							return;
+						}
+						if (!VALIDATION.isValidString(movie.imdbID)) {
+							reject('Please provide film imdbID!');
+							return;
 						}
 
-						resolve(id);
-					});
-				});
-			}
-		}/*,
-		getById: {
-			value: (params) => {
-				return new Promise((resolve, reject) => {
-					if (!VALIDATION.isDefined(params.id)) {
-						reject('Please enter user Id!');
-					}
-
-					DB.fetch(params.id, (err, user) => {
-						if( err !== null ){
-							reject('User read failed');
-						}
-
-						resolve(user);
+						movie.created = new Date();
+						DB.insert(TABLE, movie, (err, movieId) => {
+							if (err !== null) {
+								reject('Movie addition failed');
+							}
+							DB.insert('USER_MOVIE', { userId: params.userId, 'movieId': movieId }, (err, id) => {
+								if (err !== null) {
+									reject('Movie addition failed');
+								}
+								resolve(id);
+							})
+						});
 					});
 				});
 			}
 		},
-		updateById: {
+		get: {
 			value: (params) => {
 				return new Promise((resolve, reject) => {
-					if (!VALIDATION.isDefined(params.id)) {
-						reject('Please enter user Id!');
+					if (!VALIDATION.isValidString(params.userId)) {
+						reject('Please provide valid user Id!');
+						return;
 					}
-
-					DB.update(params, (err, id) => {
-						if( err !== null ){
-							reject('User update failed');
+					DB.fetch('USER_MOVIE', null, (err, userMovieRelations) => {
+						if (err !== null) {
+							return reject('Fetching session key failed!');
 						}
-
-						resolve(id);
+						let movies =[];
+						let ids = Object.keys(userMovieRelations);
+						for(let id of ids){
+							if(userMovieRelations[id].userId === params.userId){
+								DB.fetch('MOVIE', userMovieRelations[id].movieId, (err, movie) => {
+									movies.push(movie);
+								});
+							};
+						}
+						return resolve(movies);
 					});
 				});
 			}
-		},
-		deleteById: {
-			value: (params) => {
-				return new Promise((resolve, reject) => {
-					if (!VALIDATION.isDefined(params.id)) {
-						reject('Please enter user Id!');
-					}
-
-					DB.remove(params, (err, id) => {
-						if( err !== null ){
-							reject('User update failed');
-						}
-
-						resolve(id);
-					});
-				});
-			}
-		}*/
+		}
 	});
 
 module.exports = MOVIE_MODEl;

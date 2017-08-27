@@ -1,108 +1,134 @@
 const path = require('path'),
+	{ genSessionKey, genPassword, isPasswordValid } = require(path.join(process.cwd(), 'utils')),
 	DB = require(path.join(process.cwd(), 'data')),
+	TABLE = 'USER',
 	VALIDATION = require(path.join(process.cwd(), 'validation')),
 	USER_MODEL = Object.create(null, {
 		register: {
-			value: (newUser) => {
-				return new Promise( (resolve, reject) => {
-					if (!VALIDATION.isValidString(newUser.username)) {
-						reject('Please enter forename!');
+			value: (user) => {
+				return new Promise((resolve, reject) => {
+					if (!VALIDATION.isValidString(user.username)) {
+						return reject('Please enter username!');
 					}
-					if (!VALIDATION.isValidString(newUser.password)) {
-						reject('Please enter forename!');
+					if (!VALIDATION.isValidString(user.password)) {
+						return reject('Please enter password!');
 					}
-					if (!VALIDATION.isValidString(newUser.forename)) {
-						reject('Please enter forename!');
+					if (!VALIDATION.isValidString(user.confirmPasword)) {
+						return reject('Please enter password!');
 					}
-					if (!VALIDATION.isValidString(newUser.surname)) {
-						reject('Please enter surname!');
+					if (user.password !== user.confirmPasword) {
+						return reject('Please please confirm password!');
 					}
-					if (!VALIDATION.isValidEmail(newUser.email)) {
-						reject('Please enter email!');
+					if (!VALIDATION.isValidString(user.firstName)) {
+						return reject('Please enter forename!');
+					}
+					if (!VALIDATION.isValidString(user.lastName)) {
+						return reject('Please enter surname!');
+					}
+					if (!VALIDATION.isValidEmail(user.email)) {
+						return reject('Please enter email!');
 					}
 
-					newUser.created = new Date();
-					DB.insert(newUser, (err, id) => {
-						if( err !== null ){
-							reject('User creation failed');
+					DB.getByUsername(TABLE, user.username, (err, userData) => {
+						if (userData !== null) {
+							return reject(new Error('Username is not available'));
 						}
+						genPassword(user.password).then((passwordObj) => {
+							newUser = {
+								username: user.username,
+								firstName: user.firstName,
+								lastName: user.lastName,
+								email: user.email,
+								passwordHash: passwordObj.passwordHash,
+								salt: passwordObj.salt,
+								created: new Date()
+							}
+							DB.insert(TABLE, newUser, (err, id) => {
+								if (err !== null) {
+									return reject(new Error('User creation failed'));
+								}
 
-						resolve(id);
+								return resolve(id);
+							})
+						});
 					});
 				});
 			}
 		},
 		login: {
-			value: (params) => {
-				return new Promise( (resolve, reject) => {
-					if (!VALIDATION.isValidString(params.username)) {
-						reject('Please enter forename!');
+			value: (user) => {
+				let userData;
+				return new Promise((resolve, reject) => {
+					if (!VALIDATION.isValidString(user.username)) {
+						return reject('Please enter forename!');
 					}
-					if (!VALIDATION.isValidString(params.password)) {
-						reject('Please enter forename!');
+					if (!VALIDATION.isValidString(user.password)) {
+						return reject('Please enter forename!');
 					}
-
-					DB.login(params, (err, id) => {
-						if( err !== null ){
-							reject('User creation failed');
+					getByUsername(user.username).then((data) => {
+						userData = data;
+						return isPasswordValid(user.password, userData.salt, userData.passwordHash);
+					}).then((isAuthenticated) => {
+						if (!isAuthenticated) {
+							return reject('User login failed');
 						}
-
-						resolve(id);
+						return genSessionKey();
+					}).then((newSessionKey) => {
+						let data = { id: userData.id, username: user.username, loggedIn: new Date(), sessionKey: newSessionKey };
+						DB.insert('ACTIVE_SESSION', data, (err, result) => {
+							if (err !== null) {
+								return reject('User login failed');
+							}
+							data.firstName = userData.firstName;
+							data.lastName = userData.lastName;
+							return resolve(data);
+						});
+					}).catch((err) => {
+						return reject(err);
 					});
 				});
 			}
 		},
-		getById: {
-			value: (params) => {
+		getBySessionKey: {
+			value: (sessionKey) => {
+				let userData;
 				return new Promise((resolve, reject) => {
-					if (!VALIDATION.isDefined(params.id)) {
-						reject('Please enter user Id!');
+					if (!VALIDATION.isValidString(sessionKey)) {
+						return reject('Please provide valid sessionKey!');
 					}
-
-					DB.fetch(params.id, (err, user) => {
-						if( err !== null ){
-							reject('User read failed');
+					DB.fetch('ACTIVE_SESSION', null, (err, activeSessions) => {
+						if (err !== null) {
+							return reject('Fetching session key failed!');
 						}
 
-						resolve(user);
-					});
-				});
-			}
-		},
-		updateById: {
-			value: (params) => {
-				return new Promise((resolve, reject) => {
-					if (!VALIDATION.isDefined(params.id)) {
-						reject('Please enter user Id!');
-					}
-
-					DB.update(params, (err, id) => {
-						if( err !== null ){
-							reject('User update failed');
+						let ids = Object.keys(activeSessions);
+						for(let id of ids){
+							if(activeSessions[id].sessionKey === sessionKey){
+								return resolve(activeSessions[id]);
+							};
 						}
 
-						resolve(id);
-					});
-				});
-			}
-		},
-		deleteById: {
-			value: (params) => {
-				return new Promise((resolve, reject) => {
-					if (!VALIDATION.isDefined(params.id)) {
-						reject('Please enter user Id!');
-					}
-
-					DB.remove(params, (err, id) => {
-						if( err !== null ){
-							reject('User update failed');
-						}
-
-						resolve(id);
+						return reject('Invalid session key!');
 					});
 				});
 			}
 		}
 	});
+
+function getByUsername(username) {
+	return new Promise((resolve, reject) => {
+		if (!VALIDATION.isValidString(username)) {
+			return reject('Please provide username!');
+		}
+
+		DB.getByUsername(TABLE, username, (err, user) => {
+			if (err !== null) {
+				return reject(err);
+			}
+
+			return resolve(user);
+		});
+	});
+}
 
 module.exports = USER_MODEL;
